@@ -6,17 +6,23 @@
   "scripts": {
     "test": "tape build/**/*.test.js | faucet",
     "prebuild": "rimraf build",
-    "build": "babel server -d build -s",
-    "start": "node build/index.js",
+    "build": "babel server -d build/server -s && mkdir build/client && browserify client/index.js -t babelify --outfile build/client/index.js",
+    "postbuild": "cp client/index.html build/client/index.html",
+    "start": "node build/server/index.js",
     "start-dev": "babel-node server/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "babel": "^5.8.23",
+    "babelify": "^6.3.0",
+    "browserify": "^11.2.0",
     "express": "^4.13.3",
     "faucet": "0.0.1",
+    "morgan": "^1.6.1",
+    "react": "^0.13.3",
     "rimraf": "^2.4.3",
+    "rx": "^4.0.0",
     "tape": "^4.2.1",
     "ws": "^0.8.0"
   }
