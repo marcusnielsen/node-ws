@@ -28,7 +28,9 @@ function init(done) {
         });
     });
 
-    done(server);
+    if (done) {
+        done(server);
+    }
 }
 
 exports['default'] = {

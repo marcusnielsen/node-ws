@@ -25,7 +25,9 @@ function init(done) {
         });
     });
 
-    done(server);
+    if(done) {
+        done(server);
+    }
 }
 
 export default {
