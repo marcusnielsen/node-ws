@@ -1,35 +1,41 @@
-'use strict';
+import express from 'express';
+import http from 'http';
+import ioInit from 'socket.io';
+import morgan from 'morgan';
+import Rx from 'rx';
 
-let WebSocketServer = require('ws').Server;
-let http = require('http');
-let express = require('express');
-let app = express();
-let morgan = require('morgan');
+debugger;
+
+const app = express();
+const server = http.createServer(app);
+const io = ioInit(server);
+
+app.use(morgan('dev'));
+app.use('/client', express.static(__dirname + '/../../client'));
+
+const event$ = Rx.Observable.interval(1000)
+  .timeInterval()
+  .map((value) => {
+    return JSON.stringify(value);
+  });
+
+io.on('connection', (socket) => {
+  process.stdout.write('a user connected: ' + socket);
+
+  event$.subscribe((val) => {
+    socket.emit('message', val);
+  });
+});
 
 function init(done) {
-    app.use(morgan('dev'));
-    app.use('/client', express.static(__dirname + '/../../client'));
+  server.listen(process.env.PORT);
+  process.stdout.write('Server listening on port: ' + process.env.PORT + '\n');
 
-    var server = http.createServer(app);
-    server.listen(process.env.PORT);
-
-    var wss = new WebSocketServer({server: server});
-    wss.on('connection', function(ws) {
-        var id = setInterval(function() {
-            ws.send(JSON.stringify(process.memoryUsage()), function() { /* ignore errors */ });
-        }, 100);
-        console.log('started client interval');
-        ws.on('close', function() {
-            console.log('stopping client interval');
-            clearInterval(id);
-        });
-    });
-
-    if(done) {
-        done(server);
-    }
+  if (done) {
+    done(server);
+  }
 }
 
 export default {
-    init: init
+  init: init,
 };

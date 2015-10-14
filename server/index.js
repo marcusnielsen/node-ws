@@ -1,5 +1,3 @@
-'use strict';
-
 // TODO: Set via config. -MANI
 process.env.PORT = 3000;
 

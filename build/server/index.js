@@ -1,6 +1,5 @@
-'use strict';
-
 // TODO: Set via config. -MANI
+'use strict';
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
